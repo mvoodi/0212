@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
-import './App.css'; 
+import './App.css'; // Подключение стилей
 
 function App() {
+  // Состояние для исходных данных
   const [data, setData] = useState([]);
+  
+  // Состояние для строки поиска
   const [searchString, setSearchString] = useState('');
+  
+  // Состояние для фильтрованных данных
+  const [filteredData, setFilteredData] = useState([]);
 
+  // Используем useEffect для загрузки данных при первом рендере
   useEffect(() => {
+    // Инициализируем данные вручную
     const initialData = [
       { id: 1, name: 'Afghanistan' },
       { id: 2, name: 'Albania' },
@@ -109,29 +117,35 @@ function App() {
       { id: 100, name: 'Madagascar' }
     ];
 
-    setData(initialData);
-  }, []);
+    setData(initialData); // Устанавливаем данные
+  }, []); // Этот useEffect выполнится только один раз, при монтировании компонента
 
-  const filteredData = data.filter(item =>
-    item.name.toLowerCase().includes(searchString.toLowerCase())
-  );
+  // Используем useEffect для фильтрации данных при изменении строки поиска
+  useEffect(() => {
+    // Фильтруем данные при каждом изменении строки поиска
+    const filtered = data.filter(item => 
+      item.name.toLowerCase().includes(searchString.toLowerCase())
+    );
+    setFilteredData(filtered); // Обновляем состояние с фильтрованными данными
+  }, [searchString, data]); // Этот useEffect выполнится при изменении searchString или data
 
   return (
     <div className="App" id="root">
-      <h1>Search Countries</h1>
+      <h1>Search Books</h1>
+      {/* Поле для ввода строки поиска */}
       <input
         type="text"
         value={searchString}
-        onChange={(e) => setSearchString(e.target.value)}
-        placeholder="Search for a country"
+        onChange={(e) => setSearchString(e.target.value)} // Обновляем строку поиска
+        placeholder="Search for a book"
       />
       <ul>
         {data.length === 0 ? (
           <p>Loading...</p>
         ) : filteredData.length === 0 ? (
-          <p>No countries found</p>
+          <p>No books found((</p> // Если нет совпадений
         ) : (
-          filteredData.map(item => <li key={item.id}>{item.name}</li>)
+          filteredData.map(item => <li key={item.id}>{item.name}</li>) // Выводим отфильтрованный список
         )}
       </ul>
     </div>
